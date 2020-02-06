@@ -114,7 +114,7 @@ def parser_content(html, image_list):
         for details in details_group.find_all('li'):
             details_list.append(details.text)
     except:
-        details_list.append(None)
+        details_list.append('')
 
     try:
         # цветовая схема доступных цветов с сайта
@@ -122,34 +122,37 @@ def parser_content(html, image_list):
         for color in radiogrup.find_all('li'):
             color_list.append(color['data-color-swatch'])
     except:
-        color_list.append(None)
+        color_list.append('')
 
 
     try:
         # парсим 1 цвет
         color = soup.find('ul', class_='productswatches').find('li', class_='active')['data-color-swatch']
     except:
-        color = None
+        color = ''
 
     try:
         # айди обьявления
         universal_id = soup.find('div', class_='universalStyleNumber').find_all('span')[1].text
     except:
-        universal_id = None
+        universal_id = ''
 
     try:
         # парсим категорию товара
         category = soup.find('div', id='breadcrumb').find_all('a')[-2].text + ' ' + \
                    soup.find('div', id='breadcrumb').find_all('a')[-1].text
     except:
-        category = None
+        category = ''
     count = 1
     Session = sessionmaker(bind=db_engine)
     session = Session()
-    new_element = Tommy(product_name, price, price_sale, ','.join(size_list), color, ','.join(image_list),
-                         ','.join(details_list), category, ','.join(color_list), link)
-    session.add(new_element)
-    session.commit()
+    try:
+        new_element = Tommy(product_name, price, price_sale, ','.join(size_list), color, ','.join(image_list),
+                             ','.join(details_list), category, ','.join(color_list), link)
+        session.add(new_element)
+        session.commit()
+    except:
+        pass
     count += 1
     size_list.clear()
     color_list.clear()
@@ -209,10 +212,12 @@ def get_url_category(html):
         response = get_html(MAIN_URL, payload=payload)
         print(html.status_code)
         sp = BeautifulSoup(response.content, 'html.parser')
-        prod = sp.find('div', class_='grid').find_all('a', class_='productThumbnail')
-        for i in prod:
-            url_list.append(i['href'])
-
+        try:
+            prod = sp.find('div', class_='grid').find_all('a', class_='productThumbnail')
+            for i in prod:
+                url_list.append(i['href'])
+        except:
+            continue
     return url_list
 
 
