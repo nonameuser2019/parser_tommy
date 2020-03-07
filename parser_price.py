@@ -13,19 +13,13 @@ db_engine = create_engine("sqlite:///calvin.db", echo=True)
 proxy = {'HTTPS': '163.172.182.164:3128'}
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'calvin.db')
 HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:71.0) Gecko/20100101 Firefox/71.0',
-    'authority': 'usa.tommy.com',
-    'method': 'GET',
-    'scheme': 'https',
-    'Accept': 'text/html, */*; q=0.01',
-    'Accept-Encoding': 'gzip, deflate, br',
-    'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-    'adrum': 'isAjax:true',
-    'Referer': 'https://usa.tommy.com/en/new-arrivals-men',
-    'sec-fetch-mode': 'cors',
-    'sec-fetch-site': 'same-origin',
-    'x-requested-with': 'XMLHttpRequest'
-}
+    'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) snap Chromium/80.0.3987.132 Chrome/80.0.3987.132 Safari/537.36',
+    'Accept':'*/*',
+    'Cache-Control':'no-cache',
+    'Host':'usa.tommy.com',
+    'Accept-Encoding':'gzip, deflate, br',
+    'Connection':'keep-alive',
+    'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7,uz;q=0.6'}
 cat_url_list = []
 MAIN_URL = 'https://usa.tommy.com/ProductListingView'
 

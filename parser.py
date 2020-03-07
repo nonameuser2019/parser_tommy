@@ -17,24 +17,18 @@ details_list = []
 color_list = []
 url_list = []
 cat_url_list = []
-count_photo = 0
 
-proxy = {'HTTPS': '163.172.182.164:3128'}
+
+proxy = {'HTTPS': '157.245.138.230:8118'}
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'calvin.db')
 HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:71.0) Gecko/20100101 Firefox/71.0',
-    'authority': 'usa.tommy.com',
-    'method': 'GET',
-    'scheme': 'https',
-    'Accept': 'text/html, */*; q=0.01',
-    'Accept-Encoding': 'gzip, deflate, br',
-    'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-    'adrum': 'isAjax:true',
-    'Referer': 'https://usa.tommy.com/en/new-arrivals-men',
-    'sec-fetch-mode': 'cors',
-    'sec-fetch-site': 'same-origin',
-    'x-requested-with': 'XMLHttpRequest'
-}
+    'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) snap Chromium/80.0.3987.132 Chrome/80.0.3987.132 Safari/537.36',
+    'Accept':'*/*',
+    'Cache-Control':'no-cache',
+    'Host':'usa.tommy.com',
+    'Accept-Encoding':'gzip, deflate, br',
+    'Connection':'keep-alive',
+    'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7,uz;q=0.6'}
 
 payload = {
     'catalogId': '10551',
@@ -169,7 +163,24 @@ def create_dir_name():
     return dir_name
 
 
+def chek_images():
+    # проверяет номер последней фото в папке, и при запуске парсера след фото будет +1
+    num_file = []
+    last_image = 0
+    try:
+        file_list = os.listdir('images')
+        for list in file_list:
+            num_file.append(int(re.findall(r'\d*', list)[0]))
+        num_file.sort()
+        print(num_file[-1])
+    except(IndexError):
+        num_file.append(0)
+    last_image = num_file[-1]
+    return last_image
+
+
 def get_photo(html, dir_name):
+    count_photo = chek_images()
     image_list = []
     img_name = []
     soup = BeautifulSoup(html.content, 'html.parser')
@@ -180,7 +191,6 @@ def get_photo(html, dir_name):
     image_list.append(image_url.replace('main', 'alternate3'))
     for img in image_list:
         try:
-            global count_photo
             photo_name = count_photo
             file_obj = requests.get(img, stream=True)
             if file_obj.status_code == 200:
@@ -222,12 +232,15 @@ def get_url_category(html):
 
 
 def main():
+    Session = sessionmaker(bind=db_engine)
+    session = Session()
     dir_name = create_dir_name()
     cat_url_list = read_file_url()
     for cat_url in cat_url_list:
         html = get_html(cat_url)
         url_list = get_url_category(html)
     for url in url_list:
+        card_exist = session.query
         html = get_html(url)
         image_list = get_photo(html, dir_name)
         parser_content(html, image_list)
