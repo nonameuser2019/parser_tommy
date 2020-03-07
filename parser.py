@@ -7,6 +7,7 @@ import os
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from model import *
+from user_agent import generate_user_agent
 
 
 MAIN_URL = 'https://usa.tommy.com/ProductListingView'
@@ -17,12 +18,31 @@ details_list = []
 color_list = []
 url_list = []
 cat_url_list = []
+cookie = {
+    'sr_browser_id': '33df22be-572e-4904-ba40-0ad50c8bf097',
+    'sr_pik_session_id': 'a93a676-c1cc-79d7-d8d1-e0f2e070f5ea',
+    '__utma': '230066073.559163455.1579546275.1583593346.1583599172.13',
+    '__utmb': '230066073.9.10.1583599172',
+    '__utmc': '230066073',
+    '__utmz': '230066073.1581354246.9.2.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided)',
+    '__wid': '496949504',
+    '_ga': 'GA1.2.559163455.1579546275',
+    '_px2': 'eyJ1IjoiNDdkNjNiNzAtNjA5NC0xMWVhLWE2NDQtZjFhZjM2YWNiMDBkIiwidiI6ImQ2MGQxMGEyLTNiYjUtMTFlYS1hMjE1LTAyNDJhYz'
+           'EyMDAwNSIsInQiOjE1ODM2MDA1OTkzNTgsImgiOiJlMTMzMjExNGY0YjE4N2VkZDU0OThlNTY5ZDRkZjIzYjU3NTgwMTVjY2FjNGFlYjk0N'
+           'DAyNzYwZWU1Y2ExMzJlIn0=',
+    '_pxvid': 'eyJ1IjoiNDdkNjNiNzAtNjA5NC0xMWVhLWE2NDQtZjFhZjM2YWNiMDBkIiwidiI6ImQ2MGQxMGEyLTNiYjUtMTFlYS1hMjE1LTAyNDJh'
+              'YzEyMDAwNSIsInQiOjE1ODM2MDA1OTkzNTgsImgiOiJlMTMzMjExNGY0YjE4N2VkZDU0OThlNTY5ZDRkZjIzYjU3NTgwMTVjY2FjNGFl'
+              'Yjk0NDAyNzYwZWU1Y2ExMzJlIn0=',
+    'sctr': '1|1583532000000',
+    'ADRUM': 's=1583600052675&r=https%3A%2F%2Fusa.tommy.com%2Fen%2Fwomen%2Fnewarrivals-women%2Ficon-wide-leg-stripe-pant-ww28013%3F0',
+    'JSESSIONID': '0000einWRcx7PVbTVe62TS9mlJv:1crovuh4f'
 
+}
 
 proxy = {'HTTPS': '157.245.138.230:8118'}
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'calvin.db')
 HEADERS = {
-    'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) snap Chromium/80.0.3987.132 Chrome/80.0.3987.132 Safari/537.36',
+    'User-Agent': generate_user_agent(device_type="desktop", os=('mac', 'linux')),
     'Accept':'*/*',
     'Cache-Control':'no-cache',
     'Host':'usa.tommy.com',
@@ -59,7 +79,7 @@ def read_file_url():
 def get_html(url, payload=None):
     while True:
         time.sleep(random.randint(random.randint(6, 10), random.randint(12, 27)))
-        html = requests.get(url, headers=HEADERS, proxies=proxy, params=payload)
+        html = requests.get(url, headers=HEADERS, proxies=proxy, params=payload, cookies=cookie)
         if html.status_code == 200:
             print(html.status_code)
             return html
