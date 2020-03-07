@@ -8,6 +8,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from model import *
 from user_agent import generate_user_agent
+import re
 
 
 MAIN_URL = 'https://usa.tommy.com/ProductListingView'
