@@ -267,6 +267,5 @@ def main():
         parser_content(html, image_list)
 
 
-
 if __name__ == '__main__':
     main()
